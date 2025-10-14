@@ -2,6 +2,10 @@
 
 
 #include "Tank.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputMappingContext.h"
+#include "Camera/CameraComponent.h"
+
 
 ATank::ATank()
 {
@@ -23,7 +27,7 @@ void ATank::BeginPlay()
 			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
 				UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 			{
-				Subsystem->AddMappingContext(InputMappingContext, 0);
+				Subsystem->AddMappingContext(DefaultMappingContext, 0);
 			}
 		}
 	}

@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "BasePawn.h"
-#include "EnhancedInputSubsystems.h"
-#include "InputMappingContext.h"
-#include "Camera/CameraComponent.h"
+
 #include "GameFramework/SpringArmComponent.h"
 #include "Tank.generated.h"
+
+// Forward declarations
+class UInputMappingContext;
+class UCameraComponent;
+class USpringArmComponent;
 
 UCLASS()
 class BATTLEBLASTER_API ATank : public ABasePawn
@@ -28,7 +31,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputMappingContext* InputMappingContext;
+	UInputMappingContext* DefaultMappingContext;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
