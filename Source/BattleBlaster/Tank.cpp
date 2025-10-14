@@ -20,10 +20,8 @@ void ATank::BeginPlay()
 	{
 		if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(PlayerController->Player))
 		{
-			UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-				UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-
-			if (Subsystem)
+			if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+				UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
 			{
 				Subsystem->AddMappingContext(InputMappingContext, 0);
 			}
