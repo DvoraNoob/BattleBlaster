@@ -16,6 +16,15 @@ class UInputMappingContext;
 class UCameraComponent;
 class USpringArmComponent;
 
+USTRUCT(BlueprintType)
+struct FDeadZones
+{
+	GENERATED_BODY()
+
+	float LeftStick = 0.2f;
+	float RightStick = 0.2f;
+};
+
 UCLASS()
 class BATTLEBLASTER_API ATank : public ABasePawn
 {
@@ -48,6 +57,20 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TurnSpeed = 100.f;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* AimTurretAction;
+
+	UPROPERTY(EditAnywhere)
+	float TurretAimSpeed = 100.f;
+
+	bool bIsAnalog = false;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	FDeadZones AnalogDeadZone;
+
+	bool bMouseMoved = false;
+	FVector2D LastMousePos = FVector2D::ZeroVector;
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 	
@@ -59,5 +82,16 @@ public:
 
 	UFUNCTION()
 	void TurnInput(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void AimTurretAnalog(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void AimTurretMouse();
+	
+
+private:
+	UFUNCTION()
+	bool IsGamePad() const;
 
 };
