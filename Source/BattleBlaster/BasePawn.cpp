@@ -20,10 +20,14 @@ ABasePawn::ABasePawn()
 
 }
 
-void ABasePawn::TurnTurret(FVector LookTarget)
+void ABasePawn::TurnTurret(const FVector& LookTarget) const
 {
-	FVector TurretDirection = LookTarget - TurretMesh->GetComponentLocation();
-	FRotator TurretRotation = FRotator (0.f, TurretDirection.Rotation().Yaw, 0.f);
+	const FVector TurretDirection = LookTarget - TurretMesh->GetComponentLocation();
+	
+	FQuat const CurQuat = TurretMesh->GetComponentRotation().Quaternion();
+	FQuat const TargetQuat = FRotator(0.f, TurretDirection.Rotation().Yaw, 0.f).Quaternion();
+	FQuat const TurretRotation = FMath::QInterpTo(CurQuat, TargetQuat, GetWorld()->GetDeltaSeconds(), TurretTurnSpeed);
+	
 	TurretMesh->SetWorldRotation(TurretRotation);
 }
 

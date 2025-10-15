@@ -25,7 +25,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* TurretMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn = true))
+	float TurretTurnSpeed = 6.f;
+
 	UFUNCTION()
-	void TurnTurret(FVector LookTarget);
+	void TurnTurret(const FVector& LookTarget) const;
 
 };

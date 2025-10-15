@@ -59,12 +59,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* AimTurretAction;
-
-	UPROPERTY(EditAnywhere)
-	float TurretAimSpeed = 100.f;
-
-	bool bIsAnalog = false;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FDeadZones AnalogDeadZone;
 
@@ -88,10 +83,11 @@ public:
 
 	UFUNCTION()
 	void AimTurretMouse();
-	
+
+	UFUNCTION()
+	bool MouseMoved () const;
 
 private:
 	UFUNCTION()
-	bool IsGamePad() const;
-
+	bool UsingMouse() const;
 };
