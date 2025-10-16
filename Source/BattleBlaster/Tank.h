@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 
 #include "GameFramework/SpringArmComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Tank.generated.h"
 
 // Forward declarations
@@ -45,6 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputMappingContext* DefaultMappingContext;
 
+	UPROPERTY()
+	APlayerController* PlayerController;
+
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* MoveAction;
 
@@ -70,13 +74,18 @@ public:
 	FVector2D LastMousePos = FVector2D::ZeroVector;
 
 	bool bMouseIsActive = false;	
-	bool bShowMouseCursor = false;
+	bool bMouseCursorVisible = false;
 	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 	
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere)
+	UAIPerceptionStimuliSourceComponent* StimuliSource;
+
+	bool bMouseInputEnable = true;
 
 	UFUNCTION()
 	void MoveInput(const FInputActionValue& Value);
@@ -94,5 +103,7 @@ public:
 	void AimTurretMouse();
 
 	UFUNCTION()
-	void MouseMoved (const APlayerController* PlayerController);
+	void MouseMoved ();
+
+	virtual void HandleDestruction();
 };

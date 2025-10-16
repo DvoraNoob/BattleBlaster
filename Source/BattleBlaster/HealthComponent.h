@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BattleBlasterGameMode.h"
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
@@ -30,11 +31,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
 
+	UPROPERTY()
+	ABattleBlasterGameMode* BattleBlasterGameMode;
+
 	UFUNCTION(BlueprintCallable)
 	void OnDamage(AActor* DamagedActor,float Damage, const UDamageType* DamageType,
 		AController* EventInstigator, AActor* DamageCauser);
-	
-
 
 
 };

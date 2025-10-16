@@ -42,5 +42,7 @@ public:
 	
 	UFUNCTION()
 	void CheckCanFire();
+
+	virtual void HandleDestruction();
 	
 };

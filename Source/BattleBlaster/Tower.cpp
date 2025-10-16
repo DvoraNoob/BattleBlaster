@@ -43,3 +43,10 @@ void ATower::CheckCanFire()
 		FireTurret();
 	}
 }
+
+void ATower::HandleDestruction()
+{
+	Super::HandleDestruction();
+
+	Destroy();
+}

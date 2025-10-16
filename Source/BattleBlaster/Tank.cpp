@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerInput.h"
+#include "Perception/AISense_Sight.h"
 
 ATank::ATank()
 {
@@ -27,7 +28,10 @@ void ATank::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	StimuliSource = FindComponentByClass<UAIPerceptionStimuliSourceComponent>();
+
+	PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
 	{
 		if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(PlayerController->Player))
 		{
@@ -122,37 +126,35 @@ void ATank::AimTurretAnalog(const FInputActionValue& Value)
 
 void ATank::AimTurretMouse()
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	if (PlayerController)
 	{
-		MouseMoved(PlayerController);
+		MouseMoved();
 	
 		if (bMouseIsActive)
 		{
-			if (!bShowMouseCursor)
+			if (!bMouseCursorVisible)
 			{
 				PlayerController->SetShowMouseCursor(true);
-				bShowMouseCursor = true;
+				bMouseCursorVisible = true;
 			}
 
 			FHitResult HitResult;
 			PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
-		
-			// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 10, FColor::Red, false, 0.f, 0, 10);
-
+			
 			TurnTurret(HitResult.ImpactPoint);
 		}
 		else
 		{
-			if (bShowMouseCursor)
+			if (bMouseCursorVisible)
 			{
 				PlayerController->SetShowMouseCursor(false);
-				bShowMouseCursor = false;
+				bMouseCursorVisible = false;
 			}
 		}
 	}
 }
 
-void ATank::MouseMoved(const APlayerController* PlayerController)
+void ATank::MouseMoved()
 {
 	float X, Y;
 
@@ -166,4 +168,27 @@ void ATank::MouseMoved(const APlayerController* PlayerController)
 			bMouseIsActive = true;
 			LastMousePos = CurrentMousePos;
 	}
+}
+
+void ATank::HandleDestruction()
+{
+	Super::HandleDestruction();
+
+	// Hide actor
+	SetActorHiddenInGame(true);
+	// Disable collision
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Check if StimulusSource is valid and unregister
+	if (StimuliSource)
+	{
+		StimuliSource->UnregisterFromPerceptionSystem();
+	}
+
+	// Disable Tick of actor
+	SetActorTickEnabled(false);
+	// Disable the Inputs
+	DisableInput(PlayerController);
+
+	PlayerController->SetShowMouseCursor(false);
 }

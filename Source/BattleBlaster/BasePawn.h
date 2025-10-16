@@ -35,10 +35,13 @@ public:
 	TSubclassOf<class AProjectile> ProjectileBP;
 
 	UFUNCTION()
-	void TurnTurret(const FVector& LookTarget) const;
+	void TurnTurret(const FVector& LookTarget);
 
 	UFUNCTION()
 	void FireTurret();
+
+	UFUNCTION()
+	void HandleDestruction();
 	
 
 };

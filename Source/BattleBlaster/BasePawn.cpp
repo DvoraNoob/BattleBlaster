@@ -26,7 +26,7 @@ ABasePawn::ABasePawn()
 
 }
 
-void ABasePawn::TurnTurret(const FVector& LookTarget) const
+void ABasePawn::TurnTurret(const FVector& LookTarget)
 {
 	const FVector TurretDirection = LookTarget - TurretMesh->GetComponentLocation();
 
@@ -36,7 +36,6 @@ void ABasePawn::TurnTurret(const FVector& LookTarget) const
 	FQuat const TurretRotation = FMath::QInterpTo(CurQuat, TargetQuat, GetWorld()->GetDeltaSeconds(), TurretTurnSpeed);
 	
 	TurretMesh->SetWorldRotation(TurretRotation);
-
 }
 
 void ABasePawn::FireTurret()
@@ -55,6 +54,11 @@ void ABasePawn::FireTurret()
 		// Set the owner of this projectile (who fire it)
 		Projectile->SetOwner(this);
 	}
+}
+
+void ABasePawn::HandleDestruction()
+{
+	
 }
 
 

@@ -21,6 +21,8 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	BattleBlasterGameMode = Cast<ABattleBlasterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	Health = MaxHealth;
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::OnDamage);
@@ -43,7 +45,10 @@ void UHealthComponent::OnDamage(AActor* DamagedActor, float Damage, const UDamag
 		Health -= Damage;
 		if (Health <= 0)
 		{
-			GetOwner()->Destroy();
+			if (BattleBlasterGameMode)
+			{
+				BattleBlasterGameMode->ActorDied(DamagedActor);
+			}
 		}
 	}
 	
