@@ -49,7 +49,12 @@ void ABasePawn::FireTurret()
 	FVector SpawnLocation = SpawnTransform.GetLocation();
 	FRotator SpawnRotation = SpawnTransform.Rotator();
 
-	GetWorld()->SpawnActor<AProjectile>(ProjectileBP, SpawnLocation, SpawnRotation);
+	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, SpawnLocation, SpawnRotation);
+	if (Projectile)
+	{
+		// Set the owner of this projectile (who fire it)
+		Projectile->SetOwner(this);
+	}
 }
 
 
