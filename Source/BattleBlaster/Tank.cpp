@@ -57,6 +57,8 @@ void ATank::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponen
 		EIC->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ATank::TurnInput);
 		
 		EIC->BindAction(AimTurretAction, ETriggerEvent::Triggered, this, &ATank::AimTurretAnalog);
+
+		EIC->BindAction(FireAction, ETriggerEvent::Started, this, &ATank::FireInput);
 	}
 }
 
@@ -84,6 +86,16 @@ void ATank::TurnInput(const FInputActionValue& Value)
 	{
 		FRotator DeltaRotation = FRotator(0.f, InputValue, 0.f) * TurnSpeed * DeltaTime;
 		AddActorLocalRotation(DeltaRotation, true, nullptr, ETeleportType::None);
+	}
+}
+
+void ATank::FireInput(const FInputActionValue& Value)
+{
+	bool InputValue = Value.Get<bool>();
+
+	if (InputValue)
+	{
+		FireTurret();
 	}
 }
 
@@ -125,7 +137,7 @@ void ATank::AimTurretMouse()
 			FHitResult HitResult;
 			PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
 		
-			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 10, FColor::Red, false, 0.f, 0, 10);
+			// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 10, FColor::Red, false, 0.f, 0, 10);
 
 			TurnTurret(HitResult.ImpactPoint);
 		}

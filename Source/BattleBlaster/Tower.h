@@ -35,6 +35,12 @@ public:
 	FQuat StartQuat;
 
 	UPROPERTY()
-	bool SightTank = false;
+	bool bTankIsInRange = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	float FireRate = 2.f;
+	
+	UFUNCTION()
+	void CheckCanFire();
 	
 };

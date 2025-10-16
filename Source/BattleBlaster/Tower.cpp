@@ -10,13 +10,16 @@ void ATower::BeginPlay()
 	Super::BeginPlay();
 
 	StartQuat = TurretMesh->GetComponentRotation().Quaternion();
+
+	FTimerHandle FireTimerHandle;
+	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ATower::CheckCanFire, 1.f, true);
 }
 
 void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (SightTank)
+	if (bTankIsInRange)
 	{
 		TurnTurret(Tank->GetActorLocation());
 	}
@@ -30,5 +33,13 @@ void ATower::Tick(float DeltaTime)
 			
 			TurretMesh->SetWorldRotation(TurretRotation);
 		}
+	}
+}
+
+void ATower::CheckCanFire()
+{
+	if (Tank && bTankIsInRange)
+	{
+		FireTurret();
 	}
 }

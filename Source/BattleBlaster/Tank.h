@@ -48,17 +48,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* MoveAction;
 
-	UPROPERTY(EditAnywhere)
-	float MoveSpeed = 300.f;
-
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* TurnAction;
 
-	UPROPERTY(EditAnywhere)
-	float TurnSpeed = 100.f;
-
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* AimTurretAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* FireAction;
+
+	UPROPERTY(EditAnywhere)
+	float MoveSpeed = 300.f;
+	
+	UPROPERTY(EditAnywhere)
+	float TurnSpeed = 100.f;
 	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FDeadZones AnalogDeadZone;
@@ -68,7 +71,7 @@ public:
 
 	bool bMouseIsActive = false;	
 	bool bShowMouseCursor = false;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 	
@@ -80,6 +83,9 @@ public:
 
 	UFUNCTION()
 	void TurnInput(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void FireInput(const FInputActionValue& Value);
 
 	UFUNCTION()
 	void AimTurretAnalog(const FInputActionValue& Value);

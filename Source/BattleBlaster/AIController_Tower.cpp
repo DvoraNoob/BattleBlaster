@@ -47,11 +47,11 @@ void AAIController_Tower::OnTargetDetected(AActor* SensedActor, FAIStimulus Stim
 	{
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			Tower->SightTank = true;
+			Tower->bTankIsInRange = true;
 		}
 		else
 		{
-			Tower->SightTank = false;
+			Tower->bTankIsInRange = false;
 		}
 	}
 }

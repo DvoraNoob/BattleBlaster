@@ -25,8 +25,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* TurretMesh;
 
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* SpawnPoint;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	float TurretTurnSpeed = 6.f;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AProjectile> ProjectileBP;
 
 	UFUNCTION()
 	void TurnTurret(const FVector& LookTarget) const;

@@ -3,6 +3,9 @@
 
 #include "BasePawn.h"
 
+#include "Projectile.h"
+#include "Engine/StaticMeshSocket.h"
+
 // Sets default values
 ABasePawn::ABasePawn()
 {
@@ -17,6 +20,9 @@ ABasePawn::ABasePawn()
 
 	TurretMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretMesh"));
 	TurretMesh->SetupAttachment(BaseMesh);
+
+	SpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnPoint"));
+	SpawnPoint->SetupAttachment(TurretMesh);
 
 }
 
@@ -35,7 +41,15 @@ void ABasePawn::TurnTurret(const FVector& LookTarget) const
 
 void ABasePawn::FireTurret()
 {
-	
+	class UStaticMeshSocket const* SpawnSocket = TurretMesh->GetSocketByName("SpawnSocket");
+
+	FTransform SpawnTransform;
+	SpawnSocket->GetSocketTransform(SpawnTransform, TurretMesh);
+
+	FVector SpawnLocation = SpawnTransform.GetLocation();
+	FRotator SpawnRotation = SpawnTransform.Rotator();
+
+	GetWorld()->SpawnActor<AProjectile>(ProjectileBP, SpawnLocation, SpawnRotation);
 }
 
 
