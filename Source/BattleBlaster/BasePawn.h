@@ -31,4 +31,7 @@ public:
 	UFUNCTION()
 	void TurnTurret(const FVector& LookTarget) const;
 
+	UFUNCTION()
+	void FireTurret();
+
 };

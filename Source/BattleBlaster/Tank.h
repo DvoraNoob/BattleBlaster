@@ -66,6 +66,9 @@ public:
 	bool bMouseMoved = false;
 	FVector2D LastMousePos = FVector2D::ZeroVector;
 
+	bool bMouseIsActive = false;	
+	bool bShowMouseCursor = false;
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm;
 	
@@ -85,9 +88,5 @@ public:
 	void AimTurretMouse();
 
 	UFUNCTION()
-	bool MouseMoved () const;
-
-private:
-	UFUNCTION()
-	bool UsingMouse() const;
+	void MouseMoved (const APlayerController* PlayerController);
 };

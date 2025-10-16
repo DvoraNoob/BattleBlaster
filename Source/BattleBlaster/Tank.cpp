@@ -44,10 +44,7 @@ void ATank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (UsingMouse())
-	{
-		AimTurretMouse();
-	}
+	AimTurretMouse();
 }
 
 void ATank::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -98,6 +95,8 @@ void ATank::AimTurretAnalog(const FInputActionValue& Value)
 	
 	if (InputValue.Size() >= AnalogDeadZone.LeftStick)
 	{
+		bMouseIsActive = false;
+		
 		float RotationAngle = FMath::RadiansToDegrees(FMath::Atan2(InputValue.X, -InputValue.Y));
 		
 		FQuat CurQuat = TurretMesh->GetRelativeRotation().Quaternion();
@@ -113,47 +112,46 @@ void ATank::AimTurretMouse()
 {
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		if (!UsingMouse())
-			return;
-		
-		FHitResult HitResult;
-		PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, HitResult);
-		
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 10, FColor::Red, false, 0.f, 0, 10);
-
-		TurnTurret(HitResult.ImpactPoint);
-
-	}
-}
-
-bool ATank::MouseMoved() const
-{
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
-	{
-		float X, Y;
-
-		PlayerController->GetMousePosition(X, Y);
-		FVector2D CurrentMousePos(X, Y);
-		
-		return CurrentMousePos != LastMousePos;
-	}
-
-	return false;
-}
-
-bool ATank::UsingMouse() const
-{
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (!PlayerController)
-		return false;
+		MouseMoved(PlayerController);
 	
-	if (UInputDeviceSubsystem* InputDeviceSubsystem = GEngine->GetEngineSubsystem<UInputDeviceSubsystem>())
-	{
-		const FPlatformUserId UserId = PlayerController->GetPlatformUserId();
-		FHardwareDeviceIdentifier DeviceIdentifier = InputDeviceSubsystem->GetMostRecentlyUsedHardwareDevice(UserId);
+		if (bMouseIsActive)
+		{
+			if (!bShowMouseCursor)
+			{
+				PlayerController->SetShowMouseCursor(true);
+				bShowMouseCursor = true;
+			}
 
-		return  (DeviceIdentifier.PrimaryDeviceType == EHardwareDevicePrimaryType::KeyboardAndMouse);
+			FHitResult HitResult;
+			PlayerController->GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
+		
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.f, 10, FColor::Red, false, 0.f, 0, 10);
+
+			TurnTurret(HitResult.ImpactPoint);
+		}
+		else
+		{
+			if (bShowMouseCursor)
+			{
+				PlayerController->SetShowMouseCursor(false);
+				bShowMouseCursor = false;
+			}
+		}
 	}
+}
 
-	return false;
+void ATank::MouseMoved(const APlayerController* PlayerController)
+{
+	float X, Y;
+
+	PlayerController->GetMousePosition(X, Y);
+	FVector2D CurrentMousePos(X, Y);
+
+	bMouseMoved = CurrentMousePos != LastMousePos;
+		
+	if (!bMouseIsActive && bMouseMoved)
+	{
+			bMouseIsActive = true;
+			LastMousePos = CurrentMousePos;
+	}
 }
