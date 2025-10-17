@@ -105,5 +105,8 @@ public:
 	UFUNCTION()
 	void MouseMoved ();
 
+	UFUNCTION()
+	void SetPlayerInputEnabled(bool bEnable);
+
 	virtual void HandleDestruction();
 };

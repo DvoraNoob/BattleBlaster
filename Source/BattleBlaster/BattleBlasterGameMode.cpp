@@ -3,8 +3,12 @@
 
 #include "BattleBlasterGameMode.h"
 
+#include <string>
+
 #include "BattleBlasterGameInstance.h"
+#include "ScreenMessage.h"
 #include "Tower.h"
+#include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
 void ABattleBlasterGameMode::BeginPlay()
@@ -42,6 +46,41 @@ void ABattleBlasterGameMode::BeginPlay()
 			Tower->Tank = Tank;
 		}
 	}
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetWorld()->GetFirstPlayerController()))
+	{
+		ScreenMessageWidget = CreateWidget<UScreenMessage>(PlayerController, ScreenMessageWBP);
+		if (ScreenMessageWidget)
+		{
+			ScreenMessageWidget->AddToPlayerScreen();
+		}
+	}
+
+	CoundownSeconds = CoundownDelay;
+	GetWorldTimerManager().SetTimer(CountdownTimerHandle, this,
+		&ABattleBlasterGameMode::OnCountdownTimerTimeout, 1.f, true);
+}
+
+void ABattleBlasterGameMode::OnCountdownTimerTimeout()
+{
+	if (CoundownSeconds > 0)
+	{
+		ScreenMessageWidget->SetMessage(FString::FromInt(CoundownSeconds));
+	}
+	else if (CoundownSeconds == 0)
+	{
+		ScreenMessageWidget->SetMessage(TEXT("GO!"));
+		Tank->SetPlayerInputEnabled(true);
+	}
+	else if (CoundownSeconds < 0)
+	{
+		ScreenMessageWidget->SetVisibility(ESlateVisibility::Hidden);
+		GetWorldTimerManager().ClearTimer(CountdownTimerHandle);
+
+	}
+	
+	CoundownSeconds--;
+	
 }
 
 void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
@@ -73,9 +112,9 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 
 	if (IsGameOver)
 	{
-		FString GameOverMessage = IsVictory ? "Victory" : "Defeat";
-
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *GameOverMessage);
+		FString GameOverMessage = IsVictory ? "Victory" : "Defeat";\
+		ScreenMessageWidget->SetVisibility(ESlateVisibility::Visible);
+		ScreenMessageWidget->SetMessage(GameOverMessage);
 
 		FTimerHandle GameOverTimerHandle;
 		GetWorldTimerManager().SetTimer(GameOverTimerHandle, this,

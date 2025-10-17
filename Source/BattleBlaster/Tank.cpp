@@ -43,6 +43,8 @@ void ATank::BeginPlay()
 			}
 		}
 	}
+
+	SetPlayerInputEnabled(false);
 }
 
 void ATank::Tick(float DeltaTime)
@@ -172,6 +174,21 @@ void ATank::MouseMoved()
 	}
 }
 
+void ATank::SetPlayerInputEnabled(bool bEnable)
+{
+	if (bEnable) {
+		EnableInput(PlayerController);
+		// Enable Tick of actor
+		SetActorTickEnabled(true);
+	}
+	else {
+		DisableInput(PlayerController);
+		PlayerController->SetShowMouseCursor(false);
+		// Disable Tick of actor
+		SetActorTickEnabled(false);
+	}
+}
+
 void ATank::HandleDestruction()
 {
 	Super::HandleDestruction();
@@ -186,11 +203,7 @@ void ATank::HandleDestruction()
 	{
 		StimuliSource->UnregisterFromPerceptionSystem();
 	}
+	
+	SetPlayerInputEnabled(false);
 
-	// Disable Tick of actor
-	SetActorTickEnabled(false);
-	// Disable the Inputs
-	DisableInput(PlayerController);
-
-	PlayerController->SetShowMouseCursor(false);
 }
