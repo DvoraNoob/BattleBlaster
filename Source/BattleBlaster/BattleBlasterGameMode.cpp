@@ -3,6 +3,7 @@
 
 #include "BattleBlasterGameMode.h"
 
+#include "BattleBlasterGameInstance.h"
 #include "Tower.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -46,8 +47,7 @@ void ABattleBlasterGameMode::BeginPlay()
 void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 {
 	bool IsGameOver = false;
-	bool IsVictory = false;
-	
+
 	if (DeadActor == Tank)
 	{
 		Tank->HandleDestruction();
@@ -64,7 +64,6 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 
 			if (TowerCount == 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("vICTORY"));
 				IsGameOver = true;
 				IsVictory = true;
 			}
@@ -77,5 +76,28 @@ void ABattleBlasterGameMode::ActorDied(AActor* DeadActor)
 		FString GameOverMessage = IsVictory ? "Victory" : "Defeat";
 
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *GameOverMessage);
+
+		FTimerHandle GameOverTimerHandle;
+		GetWorldTimerManager().SetTimer(GameOverTimerHandle, this,
+			&ABattleBlasterGameMode::OnGameOverTimerTimeout, GameOverDelay, false);
+	}
+}
+
+void ABattleBlasterGameMode::OnGameOverTimerTimeout()
+{
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UBattleBlasterGameInstance* BattleBlasterGI = Cast<UBattleBlasterGameInstance>(GameInstance))
+		{
+			if (IsVictory)
+			{
+				BattleBlasterGI->LoadNextLevel();
+			}
+			else
+			{
+				BattleBlasterGI->RestartLevel();
+			}
+		}
+
 	}
 }

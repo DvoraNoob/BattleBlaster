@@ -31,6 +31,7 @@ void ATank::BeginPlay()
 	StimuliSource = FindComponentByClass<UAIPerceptionStimuliSourceComponent>();
 
 	PlayerController = Cast<APlayerController>(GetController());
+
 	if (PlayerController)
 	{
 		if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(PlayerController->Player))
@@ -109,7 +110,7 @@ void ATank::AimTurretAnalog(const FInputActionValue& Value)
 
 	FVector2D InputValue = Value.Get<FVector2D>();
 	
-	if (InputValue.Size() >= AnalogDeadZone.LeftStick)
+	if (InputValue.Size() >= AnalogDeadZone.RightStick)
 	{
 		bMouseIsActive = false;
 		
@@ -126,10 +127,10 @@ void ATank::AimTurretAnalog(const FInputActionValue& Value)
 
 void ATank::AimTurretMouse()
 {
+	MouseMoved();
+
 	if (PlayerController)
-	{
-		MouseMoved();
-	
+	{	
 		if (bMouseIsActive)
 		{
 			if (!bMouseCursorVisible)
@@ -165,8 +166,9 @@ void ATank::MouseMoved()
 		
 	if (!bMouseIsActive && bMouseMoved)
 	{
-			bMouseIsActive = true;
-			LastMousePos = CurrentMousePos;
+		LastMousePos = CurrentMousePos;
+		bMouseIsActive = true;
+			
 	}
 }
 
